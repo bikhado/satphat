@@ -1,0 +1,263 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    .card {
+        position: relative;
+        display: flex;
+        width: 450px;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid #d2d2dc;
+        border-radius: 4px;
+        -webkit-box-shadow: 0px 0px 5px 0px rgb(249, 249, 250);
+        -moz-box-shadow: 0px 0px 5px 0px rgba(212, 182, 212, 1);
+        box-shadow: 0px 0px 5px 0px rgb(161, 163, 164)
+    }
+
+        .card .card-body {
+            padding: 1rem 1rem
+        }
+
+    .card-body {
+        flex: 1 1 auto;
+        padding: 1.25rem
+    }
+
+    p {
+        font-size: 14px
+    }
+
+    h4 {
+        margin-top: 18px
+    }
+
+    .cross {
+        padding: 10px;
+        color: #d6312d;
+        cursor: pointer
+    }
+
+    .continue:focus {
+        outline: none
+    }
+
+    .continue {
+        border-radius: 5px;
+        text-transform: capitalize;
+        font-size: 13px;
+        padding: 8px 19px;
+        cursor: pointer;
+        color: #fff;
+        background-color: #D50000
+    }
+
+        .continue:hover {
+            background-color: #D32F2F !important
+        }
+</style>
+
+<div class="text-center">
+    <h1 class="display-4">Tính Điểm Sát Phạt</h1>
+    <p>Vui vẻ không quạo.</p>
+</div>
+<form>
+    <div class="form-group">
+        <label class="col-lg-2">
+            Nguời chơi 1:
+        </label>
+        <div class="col-lg-5">
+            <input class='form-control' type='text' id="input-1" placeholder="Nhập tên vô nè !">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-2">
+            Nguời chơi 2:
+        </label>
+        <div class="col-lg-5">
+            <input class='form-control' type='text' id="input-2" placeholder="Nhập tên vô nè !">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-2">
+            Nguời chơi 3:
+        </label>
+        <div class="col-lg-5">
+            <input class='form-control' type='text' id="input-3" placeholder="Nhập tên vô nè !">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-lg-2">
+            Nguời chơi 4:
+        </label>
+        <div class="col-lg-5">
+            <input class='form-control' type='text' id="input-4" placeholder="Nhập tên vô nè !">
+        </div>
+    </div>
+
+    <div class="offset-1 col-lg-2">
+        <input type="button" value="Lets go" class="btn btn-primary" id="btn-let-go" />
+    </div>
+
+    <div style="display:none" id="total-body">
+        <table class="table" id="table-total-score">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="form-inline">
+            <input type="button" value="Thêm Ván" class="btn btn-success" id="btn-add" />
+            <button type="button" class="btn btn-success" id="btn-total-score">Tính Điểm</button>
+            <label>Tổng số ván: <strong id="total-card-game">0</strong></label>
+        </div>
+    </div>
+
+</form>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="card">
+            <div class="text-right cross"> <i class="fa fa-times"></i> </div>
+            <div class="card-body text-center">
+                <img src="https://img.icons8.com/bubbles/200/000000/trophy.png">
+                <h4>Chúc mừng 2 thèn ml thắng cuộc!</h4>
+                <p id="p-winner"></p> <button class="btn btn-out btn-square continue">CONTINUE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#btn-add").click(function () {
+                $("#tr-total-score").remove();
+                renderRow();
+            })
+
+            function renderRow() {
+                var markup = "<tr>"
+                    + "<td><input class='form-control row-input' type='number' value='0'></td>" +
+                    "<td><input class='form-control row-input' type='number' value='0'></td>" +
+                    "<td><input class='form-control row-input' type='number' value='0'></td>" +
+                    "<td><input class='form-control row-input' type='number' value='0'></td>" +
+                    "<td><input type='button' value='Xóa' class='btn-delete btn btn-danger'></td>" +
+                    "</tr>";
+                tableBody = $("#table-total-score tbody");
+                tableBody.append(markup);
+                $("#total-card-game").text($('#table-total-score tbody tr').length);
+                renderFunctionDelete();
+            }
+
+            function renderFunctionDelete() {
+                $(".btn-delete").click(function () {
+                    $(this).closest("tr").remove();
+                    $("#tr-total-score").remove();
+                    var rowCount = $('#table-total-score tbody tr').length;
+                    $("#total-card-game").text(rowCount--);
+                })
+            }
+
+            $("#btn-let-go").click(function () {
+                renderPlayer();
+            })
+
+            function renderPlayer() {
+                var player1 = $("#input-1").val();
+                var player2 = $("#input-2").val();
+                var player3 = $("#input-3").val();
+                var player4 = $("#input-4").val();
+
+                if (player1 && player2 && player3 && player4) {
+                    $("#table-total-score thead tr").remove();
+
+                    var markup = "<tr>"
+                        + "<th scope='col'>" + player1 + "</th>" +
+                        "<th scope='col'>" + player2 + "</th>" +
+                        "<th scope='col'>" + player3 + "</th>" +
+                        "<th scope='col'>" + player4 + "</th>" +
+                        "<th scope='col'>Option</th>" +
+                        "</tr>";
+
+                    tableHead = $("#table-total-score thead");
+                    tableHead.append(markup);
+
+                    $("#total-body").show();
+                } else {
+                    alert("Vui lòng nhập 4 tay mới sát phạt được bạn ơi !!");
+                }
+            }
+
+            $("#btn-total-score").click(function () {
+                var rowCount = $('#table-total-score tbody tr').length;
+
+                if (rowCount === 0) {
+                    alert('Địt mẹ chưa chơi mà đòi tính điểm à ???');
+                    return;
+                }
+
+                $("#myModal").modal('toggle');
+                totalScore();
+            })
+
+            function totalScore() {
+                var result = [];
+                $("#tr-total-score").remove();
+
+                $('#table-total-score tbody tr').each(function () {
+                    $('td', this).each(function (index, val) {
+                        if (!result[index]) result[index] = 0;
+                        result[index] += parseInt(val.children[0].valueAsNumber);
+                    });
+                });
+
+                $('#table-total-score tbody').append('<tr id="tr-total-score"></tr>');
+
+                result.pop();
+                $(result).each(function () {
+                    $('#table-total-score tbody tr').last().append('<td>' + this + '</td>')
+                });
+
+                getWinner(result);
+            }
+
+            function getWinner(results) {
+                var resultsBackup = [];
+                resultsBackup = resultsBackup.concat(results);
+                var resultSorted = results.sort(function (a, b) { return b - a });
+                var firstWinner = resultSorted[0];
+                var secondWinner = resultSorted[1];
+
+                var firstWinnerIndex = 0;
+                var secondWinnerIndex = 0;
+                var isFoundFirstWinner = false;
+
+                for (i = 0; i < resultsBackup.length; i++) {
+                    if (!isFoundFirstWinner && resultsBackup[i] === firstWinner) {
+                        firstWinnerIndex = i;
+                        isFoundFirstWinner = true;
+                        continue;
+                    }
+
+                    if (resultsBackup[i] === secondWinner) {
+                        secondWinnerIndex = i;
+                    }
+                }
+
+                var nameFirstWinner = $('#table-total-score thead th').eq(firstWinnerIndex)[0].innerText;
+                var nameSecondWinner = $('#table-total-score thead th').eq(secondWinnerIndex)[0].innerText;
+
+                var winnerCongrat = "2 nhà thắng cuộc: " + nameFirstWinner + ", " + nameSecondWinner + "";
+                $("#p-winner").html(winnerCongrat);
+            }
+        })
+    </script>
+}
